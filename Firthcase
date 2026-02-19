@@ -1,0 +1,23 @@
+class FlatIterator:
+    def __init__(self, list_of_list):
+        # Превращаем список в итератор (или исмпользуем стек)
+        # Копируем и разворачиваем, чтобы pop() доставал первый элемент
+        self.stack = [iter(list_of_list)]
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        while self.stack:
+            try:
+                item = next(self.stack[-1])
+                if isinstance(item, list):
+                    # Если нашли список, добавляем его итератор в стек
+                    self.stack.append(iter(item))
+                else:
+                    return item
+            except StopIteration:
+                # Если иттер закончился Убираем его
+                self.stack.pop()
+        raise StopIteration
+
